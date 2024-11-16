@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: jboss/keycloak:latest
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: h2
+    ports:
+      - "8080:8080"
+    volumes:
+      - keycloak_data:/opt/jboss/keycloak/standalone/data
+
+  gateway:
+    build: .
+    container_name: netdisco_gateway
+    depends_on:
+      - keycloak
+    environment:
+      - KEYCLOAK_SERVER_URL=https://keycloak.example.com/auth/
+      - KEYCLOAK_REALM=myrealm
+      - KEYCLOAK_CLIENT_ID=netdisco-gateway
+      - KEYCLOAK_CLIENT_SECRET=YOUR_CLIENT_SECRET  # Replace with actual secret
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+
+volumes:
+  keycloak_data:
