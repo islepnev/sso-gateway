@@ -1,0 +1,18 @@
+# argparse
+# qrcode
+# python-dotenv
+# httpx
+# alembic
+
+fastapi
+uvicorn[standard]
+python-jose[cryptography]
+requests
+python-keycloak[async]
+PyYAML
+itsdangerous
+sqlalchemy
+databases
+aiosqlite
+pydantic
+jinja2

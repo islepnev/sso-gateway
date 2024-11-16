@@ -1,0 +1,13 @@
+keycloak:
+  server_url: "https://keycloak.example.com/"
+  realm: "REALM"
+  client_id: "sso-gateway"
+  client_secret: "CLIENT_SECRET"
+  redirect_uri: "http://sso-gateway.example.com:8000/gateway/auth/callback"
+  # verify_ssl: true
+  username_claim: "email"
+
+gateway:
+  prefix: "/gateway"
+  backend_url: "http://example.com"
+  database_url: "sqlite:///./tokens.db"
