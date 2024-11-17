@@ -1,8 +1,10 @@
 from typing import Optional
-from app.utils.config import AppConfig, KeycloakConfig, GatewayConfig
+from app.utils.config import AppConfig, KeycloakConfig, GatewayConfig, LoggingConfig
 import yaml
 from pathlib import Path
 import logging
+
+from app.utils.logger import configure_logging
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +34,12 @@ class ConfigManager:
             cls._config = AppConfig(
                 keycloak=KeycloakConfig(**merged_config["keycloak"]),
                 gateway=GatewayConfig(**merged_config["gateway"]),
+                logging=LoggingConfig(**merged_config.get("logging", {})),
             )
+
+            # Update logging after config is loaded
+            configure_logging(cls._config.logging.level, cls._config.logging.format)
+
         except Exception as e:
             logger.error(f"Failed to load configuration: {e}")
             raise ValueError(f"Configuration could not be loaded: {e}")

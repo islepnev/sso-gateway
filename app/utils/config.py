@@ -21,8 +21,13 @@ class GatewayConfig:
     database_url: str = "sqlite:///./db/tokens.db"
     backend_url: str = "http://example.com"
 
+@dataclass(frozen=True)
+class LoggingConfig:
+    level: str = "INFO"  # Default logging level
+    format: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"  # Default format
 
 @dataclass(frozen=True)
 class AppConfig:
     keycloak: KeycloakConfig
     gateway: GatewayConfig
+    logging: LoggingConfig
