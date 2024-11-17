@@ -8,7 +8,7 @@ fastapi
 uvicorn[standard]
 python-jose[cryptography]
 requests
-python-keycloak[async]
+python-keycloak-async
 PyYAML
 itsdangerous
 sqlalchemy
