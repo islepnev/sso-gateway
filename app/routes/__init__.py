@@ -34,5 +34,5 @@ def include_routes(app: FastAPI):
 
     # Include API router without the gateway prefix
     api_router = APIRouter()
-    api_router.include_router(backend_proxy_router, prefix="/api")
+    api_router.include_router(backend_proxy_router, prefix="/api", include_in_schema=False)
     app.include_router(api_router)

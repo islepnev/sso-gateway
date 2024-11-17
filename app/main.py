@@ -22,6 +22,7 @@ def create_app():
         title="SSO Gateway",
         docs_url=f"{config.gateway.prefix}/docs",
         redoc_url=f"{config.gateway.prefix}/redoc",
+        openapi_url=f"{config.gateway.prefix}/openapi.json",
         )
 
     # Mount static files
