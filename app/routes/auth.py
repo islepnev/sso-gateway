@@ -6,6 +6,7 @@ from app.auth.keycloak import get_keycloak_openid
 from app.utils.config_manager import ConfigManager
 import urllib.parse
 from app.utils import sessions
+from app.utils.url_helpers import get_base_url
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -14,16 +15,15 @@ logger = logging.getLogger(__name__)
 @router.get("/login")
 async def login(request: Request):
     config = ConfigManager.get_config()
-    # external_url = request.url.replace(host=request.headers.get("host"))
-    host = request.headers.get("host")
-    original_url = request.query_params.get("next")  # Use `next` if provided
-    if not original_url:
-        # Reconstruct the current URL with the external host if `next` is not provided
-        url = URL(str(request.url))  # Parse request.url into a URL object
-        original_url = str(url.replace(netloc=host))  # Replace the netloc with the external host
+    base_url = get_base_url(request)
 
-    state = urllib.parse.quote(original_url) # urllib.parse.urlencode({"next": original_url})
+    original_url = request.query_params.get("next")
+    if not original_url:
+        original_url = f"{base_url}{original_url}"
+
+    state = urllib.parse.quote(original_url)
     redirect_uri = config.keycloak.redirect_uri
+    # redirect_uri = f"{base_url}{config.gateway.prefix}/auth/callback"  # Set dynamic redirect_uri
     try:
         keycloak_openid = get_keycloak_openid()
         auth_url = await keycloak_openid.auth_url(redirect_uri=redirect_uri, state=state, scope="email openid")
@@ -38,6 +38,8 @@ async def callback(request: Request):
     config = ConfigManager.get_config()
     code = request.query_params.get('code')
     state = request.query_params.get('state')
+
+    base_url = get_base_url(request)
     redirect_uri = config.keycloak.redirect_uri # request.url_for('callback')
 
     try:
