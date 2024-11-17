@@ -25,7 +25,7 @@ def create_app():
         )
 
     # Mount static files
-    app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    app.mount(f"{config.gateway.prefix}/static", StaticFiles(directory="app/static"), name="static")
 
     include_routes(app)
 
