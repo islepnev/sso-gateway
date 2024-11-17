@@ -28,11 +28,6 @@ def create_app():
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
     include_routes(app)
-        
-    # @app.exception_handler(RedirectToLoginException)
-    # async def redirect_to_login(request: Request, exc: RedirectToLoginException):
-    #     login_url = get_login_url()
-    #     return RedirectResponse(url=login_url)
 
     @app.exception_handler(RedirectToLoginException)
     async def redirect_to_login_exception_handler(request: Request, exc: RedirectToLoginException):
