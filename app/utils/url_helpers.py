@@ -1,5 +1,27 @@
+# app/utils/url_helpers.py
+
+from fastapi import Request
+
 from app.utils.config_manager import ConfigManager
-from app.routes.auth import router as auth_router
+
+
+def get_base_url(request: Request) -> str:
+    """
+    Determine the base URL based on request headers.
+    - If behind a reverse proxy, use X-Forwarded-Host and X-Forwarded-Proto.
+    - Otherwise, derive from the request's host and scheme.
+    """
+    forwarded_proto = request.headers.get("x-forwarded-proto")
+    forwarded_host = request.headers.get("x-forwarded-host")
+    
+    if forwarded_host:
+        scheme = forwarded_proto if forwarded_proto else "http"
+        base_url = f"{scheme}://{forwarded_host}"
+    else:
+        scheme = "https" if request.url.scheme == "https" else "http"
+        base_url = f"{scheme}://{request.client.host}"
+    
+    return base_url
 
 
 def get_login_url(next: str) -> str:
