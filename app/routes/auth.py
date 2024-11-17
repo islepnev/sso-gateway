@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 async def login(request: Request):
     config = ConfigManager.get_config()
     original_url = request.query_params.get("next", "/protected")  # Default to /protected
-    state = original_url  # Include original URL in state
+    state = urllib.parse.quote(original_url) # urllib.parse.urlencode({"next": original_url})
     redirect_uri = config.keycloak.redirect_uri
     try:
         keycloak_openid = get_keycloak_openid()
@@ -27,9 +27,10 @@ async def login(request: Request):
 
 @router.get("/callback")
 async def callback(request: Request):
+    config = ConfigManager.get_config()
     code = request.query_params.get('code')
     state = request.query_params.get('state')
-    redirect_uri = request.url_for('callback')
+    redirect_uri = config.keycloak.redirect_uri # request.url_for('callback')
 
     try:
         keycloak_openid = get_keycloak_openid()
@@ -44,17 +45,20 @@ async def callback(request: Request):
         session_data = {"token": token, "userinfo": userinfo}
 
         # Save the token in session (or cookie)
-        original_url = state if state else "/protected"  # Fallback if state is missing
+        original_url = urllib.parse.unquote(state) if state else "/protected"
         response = RedirectResponse(url=original_url)
         sessions.set_token(response, session_data)
         return response
     except Exception as e:
         logger.error(f"Error during callback: {e}")
-        return RedirectResponse(url='/error')
+        error_url = str(request.url_for("error"))
+        return RedirectResponse(error_url)
 
 
 @router.get("/logout")
 async def logout(request: Request):
+    config = ConfigManager.get_config()
+    next_url = request.query_params.get("next", f"{config.gateway.prefix}/")
     token = sessions.get_token(request)
     if token and "refresh_token" in token:
         try:
@@ -62,6 +66,6 @@ async def logout(request: Request):
             await keycloak_openid.logout(token['refresh_token'])
         except Exception as e:
             logger.error(f"Error during logout: {e}")
-    response = RedirectResponse(url='/')
+    response = RedirectResponse(url=next_url)
     sessions.clear_token(response)
     return response
