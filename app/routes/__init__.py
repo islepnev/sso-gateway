@@ -9,7 +9,6 @@ from .auth import router as auth_router
 from .protected import router as protected_router
 from .error import router as error_router
 from .tokens import router as tokens_router
-from .proxy import router as proxy_router
 from .home import router as home_router  # Import the home router
 
 
@@ -28,7 +27,6 @@ def include_routes(app: FastAPI):
     gateway_router.include_router(protected_router, prefix="/protected")
     gateway_router.include_router(error_router, prefix="/error")
     gateway_router.include_router(tokens_router, prefix="/tokens")
-    gateway_router.include_router(proxy_router, prefix="/netdisco")
     gateway_router.include_router(home_router, prefix="")
 
     # Include gateway routes
