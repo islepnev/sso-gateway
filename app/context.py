@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer
 from keycloak import KeycloakOpenID
 from app.utils.config_manager import ConfigManager
 from app.utils.config import AppConfig
+from app.models.tables import metadata
 
 class AppContext:
     def __init__(self):
@@ -36,8 +37,11 @@ class AppContext:
     @property
     def engine(self):
         if self._engine is None:
-            self._engine = create_engine(self.config.gateway.prefix, connect_args={"check_same_thread": False})
-            metadata = MetaData()
+            self._engine = create_engine(
+                self.config.gateway.database_url,
+                connect_args={"check_same_thread": False}
+            )
+            # Use the metadata defined in models/tables.py to create all tables
             metadata.create_all(self._engine)
         return self._engine
 

@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status, Header
-from app.utils.database import api_tokens, get_database
+from app.context_manager import app_context
 from app.models.token import APIToken
+from app.models.tables import api_tokens
 
 async def validate_api_token(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
@@ -10,7 +11,7 @@ async def validate_api_token(authorization: str = Header(...)):
         )
     token = authorization.split(" ")[1]
     query = api_tokens.select().where(api_tokens.c.token == token)
-    database = get_database()
+    database = app_context.database
     token_record = await database.fetch_one(query)
     if not token_record:
         raise HTTPException(

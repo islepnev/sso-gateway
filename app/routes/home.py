@@ -1,3 +1,5 @@
+import logging
+from sqlite3 import OperationalError
 from fastapi import APIRouter, Depends, Request
 from fastapi.routing import APIRoute
 from starlette.templating import Jinja2Templates
@@ -24,7 +26,11 @@ async def home(
         SELECT api_tokens.token, api_tokens.created_at, api_tokens.user_id
         FROM api_tokens
     """
-    tokens = await app_context.database.fetch_all(query)
+    try:
+        tokens = await app_context.database.fetch_all(query)
+    except OperationalError as e:
+        logging.error(f"Database error: {e}")
+        tokens = []
 
     # Collect all routes under the gateway prefix
     routes = []
