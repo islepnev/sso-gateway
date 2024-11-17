@@ -20,6 +20,21 @@ def create_app():
     config = ConfigManager.get_config()
     app = FastAPI(
         title="SSO Gateway",
+        description=(
+            "The SSO Gateway simplifies secure access to backend services by providing "
+            "authentication and token management while transparently proxying requests."
+        ),
+        summary="A lightweight SSO integration and API proxy for backend services.",
+        terms_of_service="https://github.com/islepnev/sso-gateway/blob/master/TERMS.md",
+        contact={
+            "name": "SSO Gateway Maintainers",
+            "url": "https://github.com/islepnev/sso-gateway",
+            # "email": "islepnev@jinr.int"
+        },
+        license_info={
+            "name": "GNU General Public License v3.0",
+            "url": "https://www.gnu.org/licenses/gpl-3.0.html"
+        },
         docs_url=f"{config.gateway.prefix}/docs",
         redoc_url=f"{config.gateway.prefix}/redoc",
         openapi_url=f"{config.gateway.prefix}/openapi.json",

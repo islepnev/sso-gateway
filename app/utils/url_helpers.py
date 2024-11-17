@@ -8,7 +8,7 @@ from app.utils.config_manager import ConfigManager
 def get_base_url(request: Request) -> str:
     """
     Determine the base URL based on request headers.
-    - If behind a reverse proxy, use X-Forwarded-Host and X-Forwarded-Proto.
+    - If behind a reverse proxy,§ use X-Forwarded-Host and X-Forwarded-Proto.
     - Otherwise, derive from the request's host and scheme.
     """
     forwarded_proto = request.headers.get("x-forwarded-proto")

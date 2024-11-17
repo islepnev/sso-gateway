@@ -1,9 +1,3 @@
-# argparse
-# qrcode
-# python-dotenv
-# httpx
-# alembic
-
 fastapi
 uvicorn[standard]
 python-jose[cryptography]

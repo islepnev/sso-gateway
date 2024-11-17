@@ -51,14 +51,35 @@
     <div class="container">
         <!-- App Info Section -->
         <div class="info-box">
-            <h1>SSO Gateway</h1>
+            <h1>{{ openapi_info.title }}</h1>
+            <p>{{ openapi_info.description }}</p>
             <p>
-                The SSO Gateway simplifies secure access to backend services by providing 
-                authentication and token management while transparently proxying requests.
+                <strong>Version:</strong> {{ openapi_info.version }}
             </p>
             <p>
-                <strong>Version:</strong> {{ version }}
+                <strong>Summary:</strong> {{ openapi_info.summary }}
             </p>
+            {% if openapi_info.termsOfService %}
+            <p>
+                <strong>Terms of Service:</strong> 
+                <a href="{{ openapi_info.termsOfService }}" target="_blank">View Terms</a>
+            </p>
+            {% endif %}
+            {% if openapi_info.contact %}
+            <p>
+                <strong>Contact:</strong> 
+                <a href="{{ openapi_info.contact.url }}" target="_blank">{{ openapi_info.contact.name }}</a>
+                {% if openapi_info.contact.email %}
+                | <a href="mailto:{{ openapi_info.contact.email }}">{{ openapi_info.contact.email }}</a>
+                {% endif %}
+            </p>
+            {% endif %}
+            {% if openapi_info.license %}
+            <p>
+                <strong>License:</strong> 
+                <a href="{{ openapi_info.license.url }}" target="_blank">{{ openapi_info.license.name }}</a>
+            </p>
+            {% endif %}
             <p>
                 <a href="{{ gateway_prefix }}/docs">API Documentation (Swagger)</a> |
                 <a href="{{ gateway_prefix }}/redoc">ReDoc Documentation</a> |
