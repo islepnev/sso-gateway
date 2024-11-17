@@ -18,7 +18,7 @@ class KeycloakConfig:
 @dataclass(frozen=True)
 class GatewayConfig:
     prefix: str = "/gateway"
-    database_url: str = "sqlite:///./tokens.db"
+    database_url: str = "sqlite:///./db/tokens.db"
     backend_url: str = "http://example.com"
 
 

@@ -10,4 +10,4 @@ keycloak:
 gateway:
   prefix: "/gateway"
   backend_url: "http://example.com"
-  database_url: "sqlite:///./tokens.db"
+  database_url: "sqlite:///./db/tokens.db"
