@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from fastapi import APIRouter, Header, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException
 from starlette.responses import Response
 import httpx
 from app.auth.token_dependencies import validate_api_token
@@ -23,8 +23,11 @@ async def proxy_api(
     backend_url = f"{config.gateway.backend_url}/{path}"
 
     # Prepare request to the backend
-    headers = {key: value for key, value in request.headers.items()}
-    headers.pop("host", None)  # Remove host header
+    headers = {
+        key: value
+        for key, value in request.headers.items()
+        if key.lower() not in ["host", "authorization"]
+    }
 
     async with httpx.AsyncClient() as client:
         try:
