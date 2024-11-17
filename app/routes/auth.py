@@ -1,6 +1,7 @@
 import logging
 from fastapi import APIRouter, Request
 from starlette.responses import RedirectResponse
+from starlette.datastructures import URL
 from app.auth.keycloak import get_keycloak_openid
 from app.utils.config_manager import ConfigManager
 import urllib.parse
@@ -13,7 +14,14 @@ logger = logging.getLogger(__name__)
 @router.get("/login")
 async def login(request: Request):
     config = ConfigManager.get_config()
-    original_url = request.query_params.get("next", "/protected")  # Default to /protected
+    # external_url = request.url.replace(host=request.headers.get("host"))
+    host = request.headers.get("host")
+    original_url = request.query_params.get("next")  # Use `next` if provided
+    if not original_url:
+        # Reconstruct the current URL with the external host if `next` is not provided
+        url = URL(str(request.url))  # Parse request.url into a URL object
+        original_url = str(url.replace(netloc=host))  # Replace the netloc with the external host
+
     state = urllib.parse.quote(original_url) # urllib.parse.urlencode({"next": original_url})
     redirect_uri = config.keycloak.redirect_uri
     try:
