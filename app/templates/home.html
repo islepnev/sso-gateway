@@ -92,7 +92,7 @@
                     {% for token in tokens %}
                     <tr>
                         <td>{{ token.token }}</td>
-                        <td>{{ token.username }}</td>
+                        <td>{{ token.user_id }}</td>
                         <td>{{ token.created_at }}</td>
                         <td>
                             <button class="btn btn-danger revoke-button" data-token="{{ token.token }}">Revoke</button>
