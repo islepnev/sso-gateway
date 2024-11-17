@@ -7,5 +7,6 @@ services:
     container_name: sso_gateway
     ports:
       - "8000:8000"
+      - "5678:5678"  # Debug port
     volumes:
       - ./config:/app/config

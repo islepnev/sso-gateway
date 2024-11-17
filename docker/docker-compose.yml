@@ -1,0 +1,49 @@
+# docker/docker-compose.yml
+
+version: '3.8'
+services:
+  apache-proxy:
+    build:
+      context: ./apache-proxy
+      dockerfile: Dockerfile
+    container_name: apache-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./apache-proxy/proxy.conf:/usr/local/apache2/conf/extra/proxy.conf:ro
+    depends_on:
+      - sso-gateway
+    networks:
+      - app-network
+
+  sso-gateway:
+    build:
+      context: ..
+      dockerfile: docker/sso-gateway/Dockerfile
+    container_name: sso-gateway
+    volumes:
+      - ./sso-gateway/config:/app/app/config:ro
+      - ./sso-gateway/db:/app/db
+    environment:
+      - TZ=Europe/Moscow
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    depends_on:
+      - dummy-api
+    networks:
+      - app-network
+
+  dummy-api:
+    build:
+      context: ./dummy-api
+      dockerfile: Dockerfile
+    container_name: dummy-api
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
