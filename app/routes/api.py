@@ -28,6 +28,7 @@ async def proxy_api(
         for key, value in request.headers.items()
         if key.lower() not in ["host", "authorization"]
     }
+    headers["X-Remote-User"] = user_id
 
     async with httpx.AsyncClient() as client:
         try:
