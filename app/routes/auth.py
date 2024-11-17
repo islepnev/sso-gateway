@@ -56,7 +56,7 @@ async def callback(request: Request):
 @router.get("/logout")
 async def logout(request: Request):
     token = sessions.get_token(request)
-    if token:
+    if token and "refresh_token" in token:
         try:
             keycloak_openid = get_keycloak_openid()
             await keycloak_openid.logout(token['refresh_token'])
